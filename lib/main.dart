@@ -49,7 +49,6 @@ class MyApp extends StatelessWidget {
         routes: {
           '/main': (context) => MainScreen(),
           '/home': (context) => HomeScreen(), // Ensures `/home` route is defined
-          // Define other routes as needed
         },
       ),
     );

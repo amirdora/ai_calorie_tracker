@@ -112,4 +112,14 @@ class FoodLogCubit extends Cubit<FoodLogState> {
     
     return weeklyData;
   }
+
+    Future<void> addMealFromImage(String base64Image) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+      final meal = await _repository.detectFoodFromImage(base64Image);
+      await addMeal(meal); // Assuming addMeal() updates the state appropriately
+    } catch (e) {
+      emit(state.copyWith(error: e.toString(), isLoading: false));
+    }
+  }
 }

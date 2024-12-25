@@ -4,3 +4,9 @@
 /.flutter-plugins-dependencies
 /.idea
 /.metadata
+build/*
+.env    
+
+/build
+/build
+ios/Podfile.lock
