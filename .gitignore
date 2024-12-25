@@ -9,4 +9,4 @@ build/*
 
 /build
 /build
-ios/Podfile.lock
+pubspec.lock
