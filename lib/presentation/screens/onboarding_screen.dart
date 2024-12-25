@@ -153,6 +153,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false, // Prevents keyboard from pushing up content
       appBar: _currentPage == 0 ? AppBar(
         automaticallyImplyLeading: false,
         actions: [
@@ -229,8 +230,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ],
       ),
       bottomNavigationBar: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+            top: 20,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
