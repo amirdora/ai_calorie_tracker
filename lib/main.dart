@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:ai_calorie_tracker/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -8,8 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'data/repositories/food_repository.dart';
 import 'data/services/food_service.dart';
 import 'presentation/cubit/food_log_cubit.dart';
+import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/onboarding_screen.dart';
 import 'presentation/screens/main_screen.dart';
+import 'presentation/screens/settings_screen.dart';
 
 Future<void> _loadEnvironmentFile() async {
   try {
@@ -62,7 +63,10 @@ class MyApp extends StatelessWidget {
         home: showOnboarding ? OnboardingScreen() : MainScreen(),
         routes: {
           '/main': (context) => MainScreen(),
-          '/home': (context) => HomeScreen(), // Ensures `/home` route is defined
+          '/home': (context) => HomeScreen(), 
+          '/onboarding': (context) => OnboardingScreen(),
+          '/settings': (context) => SettingsScreen(),
+// Ensures `/home` route is defined
         },
       ),
     );
