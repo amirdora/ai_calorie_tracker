@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../data/models/food_item.dart';
+import '../../data/models/meal_detail_screen.dart';
 import 'meal_list_item.dart';
 
 class MealList extends StatelessWidget {
   final List<FoodItem> meals;
 
   const MealList({
-    Key? key,
     required this.meals,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -17,7 +18,17 @@ class MealList extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       itemCount: meals.length,
       separatorBuilder: (context, index) => SizedBox(height: 12),
-      itemBuilder: (context, index) => MealListItem(meal: meals[index]),
+      itemBuilder: (context, index) => GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MealDetailScreen(meal: meals[index]),
+            ),
+          );
+        },
+        child: MealListItem(meal: meals[index]),
+      ),
     );
   }
 }

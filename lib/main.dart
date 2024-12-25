@@ -51,8 +51,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => FoodLogCubit(foodRepository),
+      create: (context) => FoodLogCubit(foodRepository)..loadDailyLog(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Calorie Tracker',
         theme: ThemeData(
           primarySwatch: Colors.blue,

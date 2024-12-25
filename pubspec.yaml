@@ -1,5 +1,5 @@
 name: ai_calorie_tracker
-description: "A new Flutter project."
+description: "AI Calorie Tracker is a smart and user-friendly application designed to help users monitor their food intake, track calories, and manage their health goals."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
