@@ -19,15 +19,6 @@ class GraphScreen extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             }
 
-            if (state.error != null) {
-              return Center(
-                child: Text(
-                  state.error!,
-                  style: TextStyle(color: Colors.red),
-                ),
-              );
-            }
-
             return Column(
               children: [
                 Container(

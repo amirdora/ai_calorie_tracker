@@ -6,6 +6,7 @@ import 'dart:convert';
 import '../cubit/food_log_cubit.dart';
 import '../widgets/daily_tracker.dart';
 import '../widgets/meal_list.dart';
+import '../widgets/alert_message_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -77,24 +78,37 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text("Today's trackers", style: Theme.of(context).textTheme.titleMedium),
                 SizedBox(height: 16),
                 BlocBuilder<FoodLogCubit, FoodLogState>(
-                  builder: (context, state) {
-                    if (state.isLoading) {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                    if (state.error != null) {
-                      return Center(child: Text(state.error!, style: TextStyle(color: Colors.red)));
-                    }
-                    return Column(
-                      children: [
-                        DailyTracker(calories: state.totalCalories, protein: state.totalProtein, carbs: state.totalCarbs, fat: state.totalFat),
-                        SizedBox(height: 24),
-                        Text('Meals', style: Theme.of(context).textTheme.titleMedium),
-                        SizedBox(height: 16),
-                        MealList(meals: state.meals),
-                      ],
-                    );
-                  },
-                ),
+                builder: (context, state) {
+                  if (state.isLoading) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return Column(
+                    children: [
+                      // Tracker Section
+                      DailyTracker(
+                        calories: state.totalCalories,
+                        protein: state.totalProtein,
+                        carbs: state.totalCarbs,
+                        fat: state.totalFat,
+                      ),
+                      SizedBox(height: 24),
+
+                      // Inline Alert Section for Success or Error
+                      if (state.successMessage != null || state.error != null)
+                          AlertMessageWidget(
+                            errorMessage: state.error,
+                            successMessage: state.successMessage,
+                            onClose: () => context.read<FoodLogCubit>().clearMessages(),
+                          ),
+
+                      // Meals Section
+                      Text('Meals', style: Theme.of(context).textTheme.titleMedium),
+                      SizedBox(height: 16),
+                      MealList(meals: state.meals),
+                    ],
+                  );
+                },
+              ),
               ],
             ),
           ),

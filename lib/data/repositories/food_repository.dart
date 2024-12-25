@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/food_item.dart';
 import '../services/food_service.dart';
@@ -33,7 +34,32 @@ class FoodRepository {
     );
   }
 
-  Future<FoodItem> detectFoodFromImage(File image) async {
+  Future<Either<String, FoodItem>> detectFoodFromImage(File image) async {
     return await _foodService.detectFoodAndCalories(image);
+  }
+
+    Future<void> deleteFoodItem(FoodItem item) async {
+    final String key = 'food_log_${item.timestamp.toIso8601String().split('T')[0]}';
+    List<FoodItem> currentLog = await getDailyFoodLog(item.timestamp);
+    currentLog.removeWhere((existingItem) => existingItem.id == item.id);
+
+    await _prefs.setString(
+      key,
+      json.encode(currentLog.map((item) => item.toJson()).toList()),
+    );
+  }
+
+  Future<void> updateFoodItem(FoodItem item) async {
+    final String key = 'food_log_${item.timestamp.toIso8601String().split('T')[0]}';
+    List<FoodItem> currentLog = await getDailyFoodLog(item.timestamp);
+    final index = currentLog.indexWhere((existingItem) => existingItem.id == item.id);
+
+    if (index != -1) {
+      currentLog[index] = item;
+      await _prefs.setString(
+        key,
+        json.encode(currentLog.map((item) => item.toJson()).toList()),
+      );
+    }
   }
 }

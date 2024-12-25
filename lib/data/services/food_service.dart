@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 
@@ -20,14 +21,12 @@ class FoodService {
     // Initialize the Gemini instance
     Gemini.init(apiKey: _apiKey);
   }
-Future<FoodItem> detectFoodAndCalories(File imageFile) async {
+Future<Either<String, FoodItem>> detectFoodAndCalories(File imageFile) async {
   try {
-    // Ensure the file exists
     if (!imageFile.existsSync()) {
-      throw Exception('File not found: ${imageFile.path}');
+      return Left('File not found: ${imageFile.path}');
     }
 
-    // Process text and image input
     final response = await Gemini.instance.textAndImage(
       text: 'Analyze this image and identify the food. '
           'Estimate its calories, protein, carbs, and fat. '
@@ -35,34 +34,30 @@ Future<FoodItem> detectFoodAndCalories(File imageFile) async {
       images: [imageFile.readAsBytesSync()],
     );
 
-    // Extract the output text
-    final output = response?.output; // Check if 'output' contains the response text
+    final output = response?.output;
     if (output == null || output.isEmpty) {
-      throw Exception('No response output from Gemini API');
+      return Left('No response output from Gemini API');
     }
 
-    // Log the raw output for debugging
-    print('Gemini API Output: $output');
-
-    // Try to parse JSON from the output
     final match = RegExp(r'\{.*\}').firstMatch(output);
     if (match == null) {
-      throw Exception('No valid JSON found in output: $output');
+      return Left('No valid JSON found in output: $output');
     }
 
     final foodData = jsonDecode(match.group(0)!);
 
-    return FoodItem(
+    return Right(FoodItem(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: foodData['name'],
       calories: foodData['calories'].toDouble(),
       protein: foodData['protein'].toDouble(),
       carbs: foodData['carbs'].toDouble(),
       fat: foodData['fat'].toDouble(),
-      quantity: 100.0, // Default serving size
+      quantity: 100.0,
       timestamp: DateTime.now(),
-    );
+    ));
   } catch (e) {
-    throw Exception('Failed to detect food: ${e.toString()}');
+    return Left('Failed to detect food: ${e.toString()}');
   }
 }
 }

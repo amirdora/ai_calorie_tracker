@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/models/food_item.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import '../cubit/food_log_cubit.dart';
+import 'edit_meal_screen.dart';
 
 class MealDetailScreen extends StatelessWidget {
   final FoodItem meal;
@@ -9,6 +13,39 @@ class MealDetailScreen extends StatelessWidget {
     Key? key,
     required this.meal,
   }) : super(key: key);
+
+  void _deleteMeal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete Meal'),
+        content: Text('Are you sure you want to delete this meal?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              context.read<FoodLogCubit>().deleteMeal(meal);
+              Navigator.pop(context); // Close the dialog
+              Navigator.pop(context); // Navigate back to the meal list
+            },
+            child: Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _editMeal(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditMealScreen(meal: meal),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +59,16 @@ class MealDetailScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 1,
         iconTheme: IconThemeData(color: Colors.black),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit, color: Colors.black),
+            onPressed: () => _editMeal(context),
+          ),
+          IconButton(
+            icon: Icon(Icons.delete, color: Colors.red),
+            onPressed: () => _deleteMeal(context),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -72,9 +119,9 @@ class MealDetailScreen extends StatelessWidget {
               value: '${meal.quantity.toStringAsFixed(1)} g',
             ),
             DetailListItem(
-              icon: Icons.calendar_today,
-              label: 'Logged on',
-              value: '${meal.timestamp.toLocal()}',
+              icon: Icons.access_time,
+              label: 'Logged',
+              value: timeago.format(meal.timestamp),
             ),
           ],
         ),

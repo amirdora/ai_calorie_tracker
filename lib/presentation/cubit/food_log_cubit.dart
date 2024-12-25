@@ -13,6 +13,7 @@ class FoodLogState {
   final List<double> weeklyData;
   final bool isLoading;
   final String? error;
+  final String? successMessage; // New field for success messages
 
   const FoodLogState({
     this.meals = const [],
@@ -23,6 +24,7 @@ class FoodLogState {
     this.weeklyData = const [],
     this.isLoading = false,
     this.error,
+    this.successMessage,
   });
 
   FoodLogState copyWith({
@@ -34,6 +36,7 @@ class FoodLogState {
     List<double>? weeklyData,
     bool? isLoading,
     String? error,
+    String? successMessage,
   }) {
     return FoodLogState(
       meals: meals ?? this.meals,
@@ -44,6 +47,7 @@ class FoodLogState {
       weeklyData: weeklyData ?? this.weeklyData,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
+      successMessage: successMessage ?? this.successMessage,
     );
   }
 }
@@ -115,13 +119,56 @@ class FoodLogCubit extends Cubit<FoodLogState> {
     return weeklyData;
   }
 
-    Future<void> addMealFromImage(File image) async {
+  Future<void> addMealFromImage(File image) async {
+    emit(state.copyWith(isLoading: true));
+    final result = await _repository.detectFoodFromImage(image);
+    result.fold(
+      (failure) {
+        // Emit error message
+        emit(state.copyWith(error: failure, successMessage: null, isLoading: false));
+      },
+      (meal) async {
+        await addMeal(meal);
+        // Emit success message
+        emit(state.copyWith(
+          error: null,
+          successMessage: 'Food "${meal.name}" detected successfully and added to the log.',
+          isLoading: false,
+        ));
+      },
+    );
+  }
+
+  void clearMessages() {
+    emit(FoodLogState(
+      meals: state.meals,
+      totalCalories: state.totalCalories,
+      totalProtein: state.totalProtein,
+      totalCarbs: state.totalCarbs,
+      totalFat: state.totalFat,
+      weeklyData: state.weeklyData,
+      isLoading: state.isLoading,
+      error: null, // Explicitly clear error
+      successMessage: null, // Explicitly clear success message
+    ));
+  }
+
+    Future<void> deleteMeal(FoodItem meal) async {
     try {
-      emit(state.copyWith(isLoading: true));
-      final meal = await _repository.detectFoodFromImage(image);
-      await addMeal(meal); // Assuming addMeal() updates the state appropriately
+      await _repository.deleteFoodItem(meal);
+      await loadDailyLog();
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
+      emit(state.copyWith(error: e.toString()));
     }
   }
+
+  Future<void> updateMeal(FoodItem meal) async {
+    try {
+      await _repository.updateFoodItem(meal);
+      await loadDailyLog();
+    } catch (e) {
+      emit(state.copyWith(error: e.toString()));
+    }
+  }
+
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'graph_screen.dart';
+import 'settings_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -12,6 +13,8 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
     GraphScreen(),
+    SettingsScreen(),
+
   ];
 
   @override
@@ -33,6 +36,10 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
             label: 'Progress',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),

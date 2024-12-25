@@ -1,8 +1,12 @@
-import 'package:ai_calorie_tracker/presentation/widgets/macro_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class DailyTracker extends StatelessWidget {
+import '../../data/local/preference_manager.dart';
+import '../../data/models/user_data.dart';
+import 'macro_indicator.dart';
+
+class DailyTracker extends StatefulWidget {
   final double calories;
   final double protein;
   final double carbs;
@@ -16,7 +20,29 @@ class DailyTracker extends StatelessWidget {
   });
 
   @override
+  State<DailyTracker> createState() => _DailyTrackerState();
+}
+
+class _DailyTrackerState extends State<DailyTracker> {
+  UserData? userData;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final prefManager = PreferenceManager(prefs);
+    userData = prefManager.getUserData();
+    if (mounted) setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final targetCalories = userData?.estimatedCalories?.toDouble() ?? 2000.0;
+
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -32,16 +58,28 @@ class DailyTracker extends StatelessWidget {
       ),
       child: Column(
         children: [
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.green.shade50,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Text(
+              'Daily Calorie Goal: ${userData?.estimatedCalories ?? 2000} kcal',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          SizedBox(height: 16),
           CircularPercentIndicator(
             radius: 80.0,
             lineWidth: 8.0,
-            percent: calories / 2000, // Assuming 2000 is daily goal
+            percent: widget.calories / targetCalories,
             center: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.local_fire_department, color: Colors.orange),
                 Text(
-                  '${calories.toInt()} kcal',
+                  '${widget.calories.toInt()} kcal',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -54,20 +92,20 @@ class DailyTracker extends StatelessWidget {
             children: [
               MacroIndicator(
                 label: 'Protein',
-                value: protein,
-                goal: 90,
+                value: widget.protein,
+                goal: (userData?.proteinGoal ?? 0).toDouble(),
                 color: Colors.green,
               ),
               MacroIndicator(
                 label: 'Fats',
-                value: fat,
-                goal: 70,
+                value: widget.fat,
+                goal: (userData?.fatGoal ?? 0).toDouble(),
                 color: Colors.orange,
               ),
               MacroIndicator(
                 label: 'Carbs',
-                value: carbs,
-                goal: 110,
+                value: widget.carbs,
+                goal: (userData?.carbsGoal ?? 0).toDouble(),
                 color: Colors.amber,
               ),
             ],
