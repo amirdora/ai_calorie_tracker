@@ -4,6 +4,12 @@ Welcome to the **Calorie Detector App**! This Flutter app uses Google Gemini AI 
 
 ---
 
+## Screenshots
+![Screenshot 1](screenshots/welcome_screen.png)
+![Screenshot 2](screenshots/main_screen.png)
+![Screenshot 3](screenshots/progress_screen.png)
+![Screenshot 4](screenshots/edit_screen.png)
+
 ## Features
 
 1. **Onboarding Screen**:
@@ -48,11 +54,6 @@ Welcome to the **Calorie Detector App**! This Flutter app uses Google Gemini AI 
     ```bash
     flutter run
     ```
-### Screenshots
-![Screenshot 1](screenshots/screenshot1.png)
-![Screenshot 2](screenshots/screenshot2.png)
-![Screenshot 3](screenshots/screenshot3.png)
-
 
 ### Dependencies
 - [gemini-1.5-pro](https://gemini.google.com/models/gemini-1.5-pro)
