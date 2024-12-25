@@ -5,10 +5,13 @@ Welcome to the **Calorie Detector App**! This Flutter app uses Google Gemini AI 
 ---
 
 ## Screenshots
-![Screenshot 1](screenshots/welcome_screen.png)
-![Screenshot 2](screenshots/main_screen.png)
-![Screenshot 3](screenshots/progress_screen.png)
-![Screenshot 4](screenshots/edit_screen.png)
+| Welcome Screen | Main Screen |
+|:---:|:---:|
+| ![Welcome Screen](screenshots/welcome_screen.png) | ![Main Screen](screenshots/main_screen.png) |
+
+| Progress Screen | Edit Screen |
+|:---:|:---:|
+| ![Progress Screen](screenshots/progress_screen.png) | ![Edit Screen](screenshots/edit_screen.png) |
 
 ## Features
 
