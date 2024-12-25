@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/models/food_item.dart';
 import '../../data/repositories/food_repository.dart';
@@ -113,10 +115,10 @@ class FoodLogCubit extends Cubit<FoodLogState> {
     return weeklyData;
   }
 
-    Future<void> addMealFromImage(String base64Image) async {
+    Future<void> addMealFromImage(File image) async {
     try {
       emit(state.copyWith(isLoading: true));
-      final meal = await _repository.detectFoodFromImage(base64Image);
+      final meal = await _repository.detectFoodFromImage(image);
       await addMeal(meal); // Assuming addMeal() updates the state appropriately
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));

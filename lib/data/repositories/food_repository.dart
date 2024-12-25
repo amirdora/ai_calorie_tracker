@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/food_item.dart';
@@ -32,7 +33,7 @@ class FoodRepository {
     );
   }
 
-  Future<FoodItem> detectFoodFromImage(String base64Image) async {
-    return await _foodService.detectFoodAndCalories(base64Image);
+  Future<FoodItem> detectFoodFromImage(File image) async {
+    return await _foodService.detectFoodAndCalories(image);
   }
 }

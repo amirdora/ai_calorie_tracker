@@ -31,9 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void scanImage() async {
-    final bytes = _image!.readAsBytesSync();
-    String img64 = base64Encode(bytes);
-    context.read<FoodLogCubit>().addMealFromImage(img64);
+    context.read<FoodLogCubit>().addMealFromImage(_image!);
   }
 
   void showImageSourceActionSheet(BuildContext context) {
