@@ -44,6 +44,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   http: ^1.2.2
   image_picker: ^1.1.2
+  flutter_launcher_icons: ^0.14.2
 
 dev_dependencies:
   flutter_test:

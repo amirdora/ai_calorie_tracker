@@ -11,3 +11,4 @@ build/*
 /build
 pubspec.lock
 .env
+*.lock
